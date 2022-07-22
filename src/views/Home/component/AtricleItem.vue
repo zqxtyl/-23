@@ -4,12 +4,14 @@
       v-if="articleInfo.cover.type === 0"
       :title="articleInfo.title"
       :label="articleDesc"
+      :to="`/article/${articleInfo.art_id}`"
     />
 
     <van-cell
       v-if="articleInfo.cover.type === 1"
       :title="articleInfo.title"
       :label="articleDesc"
+      :to="`/article/${articleInfo.art_id}`"
     >
       <van-image
         width="3rem"
@@ -22,6 +24,7 @@
       v-if="articleInfo.cover.type === 3"
       :title="articleInfo.title"
       :label="articleDesc"
+      :to="`/article/${articleInfo.art_id}`"
     >
       <template #label>
         <div>
@@ -55,6 +58,7 @@ export default {
   computed: {
     articleDesc() {
       const info = this.articleInfo;
+      // console.log(info);
       const times = dayjs(info.pubdate).fromNow();
       return `${info.aut_name} ${info.comm_count}评论 ${times}`;
     },

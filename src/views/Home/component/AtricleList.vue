@@ -49,6 +49,7 @@ export default {
         const { data } = await getArticleList(this.id, Date.now());
         this.pre_timestamp = data.data.pre_timestamp;
         this.articles = data.data.results;
+        // console.log(data.data.results);
       } catch (error) {
         const status = error.response.status;
         if (status === 400) {
@@ -77,6 +78,7 @@ export default {
         this.refreshLoading = false;
       }
     },
+
   },
   components: {
     AtricleItem,

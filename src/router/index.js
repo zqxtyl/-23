@@ -35,6 +35,15 @@ const routes = [
       }
     ],
   },
+  {
+    path: "/search",
+    component: () => import("@/views/Search"),
+  },
+  {
+    path:'/article/:articleId',
+    component:()=>import('@/views/article'),
+    props:true
+  }
 ];
 
 const router = new VueRouter({
