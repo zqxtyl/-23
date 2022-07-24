@@ -43,6 +43,10 @@ const routes = [
     path:'/article/:articleId',
     component:()=>import('@/views/article'),
     props:true
+  },
+  {
+    path:'/user/edit',
+    component:()=>import('@/views/userEdit')
   }
 ];
 

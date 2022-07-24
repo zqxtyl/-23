@@ -34,8 +34,9 @@
           <div slot="title" class="user-name">{{ List.aut_name }}</div>
           <div slot="label" class="publish-date">{{ List.pubdate }}</div>
 
-
-          <item-guanzhu/>
+          <!-- 关注 -->
+          <item-guanzhu :user-id="List.aut_id" v-model="List.is_followed" />
+          <!-- 关注 -->
         </van-cell>
         <!-- /用户信息 -->
 
@@ -58,17 +59,43 @@
         <p class="text">内容加载失败！</p>
         <van-button class="retry-btn">点击重试</van-button>
       </div>
-      <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
+      <!-- 评论列表 -->
+      <ArticleComment :userId="articleId"  />
     </div>
 
     <!-- 底部区域 -->
     <div class="article-bottom">
-      <van-button class="comment-btn" type="default" round size="small"
-        >写评论</van-button
+      <!-- 写评论 -->
+      <van-button
+        class="comment-btn"
+        type="default"
+        round
+        size="small"
+        @click="showPopup"
+        >写评论
+      </van-button>
+      <van-popup
+        v-model="show"
+        position="bottom"
+        :style="{ height: '20%' }"
+        class="text"
       >
+        <van-field
+          v-model="message"
+          rows="2"
+          autosize
+          type="textarea"
+          maxlength="50"
+          placeholder="请输入留言"
+          show-word-limit
+        />
+        <van-button type="default" @click="addPublishFn">发布</van-button>
+      </van-popup>
       <van-icon name="comment-o" info="123" color="#777" />
-      <van-icon color="#777" name="star-o" />
-      <van-icon color="#777" name="good-job-o" />
+      <!-- 收藏 -->
+      <itemShoucang :userId="articleId" v-model="List.is_collected" />
+      <!-- 点赞 -->
+      <itemDianzan :userId="articleId" v-model="List.attitude" />
       <van-icon name="share" color="#777777"></van-icon>
     </div>
     <!-- /底部区域 -->
@@ -76,8 +103,11 @@
 </template>
 
 <script>
-import { getArticles } from "@/api/article";
-import itemGuanzhu from '@/component/item-guanzhu'
+import { getArticles ,addPublish} from "@/api/article";
+import itemGuanzhu from "@/component/item-guanzhu";
+import itemShoucang from "@/component/item-shoucang";
+import itemDianzan from "@/component/item-dianzan";
+import ArticleComment from "./component/article-comment.vue";
 export default {
   name: "ArticleIndex",
   components: {},
@@ -92,6 +122,8 @@ export default {
       List: [],
       loading: false,
       errStatus: 0,
+      show: false,
+      message:''
     };
   },
   computed: {},
@@ -101,15 +133,30 @@ export default {
   },
   mounted() {},
   methods: {
+    //获取文章详情
     async getArticlest() {
       const { data } = await getArticles(this.articleId);
       this.List = data.data;
-      console.log(data.data);
+      // console.log(data.data);
+      console.log(this.articleId);
     },
+    showPopup() {
+      this.show = !this.show;
+    },
+   async addPublishFn(){
+      const {data}=await addPublish({
+        target:this.articleId,
+        content:this.message
+      })
+      this.show = false
+    }
   },
-  components:{
-    itemGuanzhu
-  }
+  components: {
+    itemGuanzhu,
+    itemShoucang,
+    itemDianzan,
+    ArticleComment,
+  },
 };
 </script>
 
@@ -226,6 +273,22 @@ export default {
         background-color: #e22829;
       }
     }
+  }
+
+  /deep/.van-field__control {
+    width: 50%;
+    margin-right: 50px;
+  }
+  .text {
+    display: flex;
+    /deep/.van-button {
+      margin-top: 70px;
+      border: none;
+      color: skyblue;
+    }
+  }
+  /deep/.van-icon-arrow-left{
+    color: #fff;
   }
 }
 </style>
